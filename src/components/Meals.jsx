@@ -1,0 +1,9 @@
+export default function Meals() {
+  async function fetchMeals() {
+    const response = await fetch("http://localhost:3000/meals");
+
+    response.json();
+  }
+
+  return <ul id="meals"></ul>;
+}
