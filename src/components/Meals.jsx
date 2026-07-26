@@ -14,5 +14,13 @@ export default function Meals() {
     setLoadedMeals(meals);
   }
 
-  return <ul id="meals">{loadedMeals}</ul>;
+  fetchMeals();
+
+  return (
+    <ul id="meals">
+      {loadedMeals.map((meal) => (
+        <li key={meal.id}>{meal.name}</li>
+      ))}
+    </ul>
+  );
 }
