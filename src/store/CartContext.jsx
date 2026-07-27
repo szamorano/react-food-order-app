@@ -20,9 +20,12 @@ function cartReducer(state, action) {
         ...existingItem,
         quantity: existingItem.quantity + 1,
       };
+      updatedItems[existingCartItemIndex] = updatedItem;
     } else {
-      updatedItems.push(action.item);
+      updatedItems.push({ ...action.item, quantity: 1 });
     }
+
+    return { ...state, items: updatedItems };
   }
 
   if (action.type === "REMOVE_ITEM") {
