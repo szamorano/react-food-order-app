@@ -52,9 +52,15 @@ function cartReducer(state, action) {
 }
 
 export function CartContextProvider({ children }) {
-  useReducer(cartReducer, { items: [] });
+  const [cart, dispatchCartAction] = useReducer(cartReducer, { items: [] });
 
-  return <CartContext.Provider>{children}</CartContext.Provider>;
+  const cartContext = {
+    items: cart.items,
+  };
+
+  return (
+    <CartContext.Provider value={cartContext}>{children}</CartContext.Provider>
+  );
 }
 
 export default CartContext;
