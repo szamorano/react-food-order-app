@@ -38,16 +38,14 @@ export default function Checkout() {
     // fd.get('full-name')
     const customerData = Object.fromEntries(fd.entries());
 
-    fetch("http://localhost:3000/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    sendRequest(
+      JSON.stringify({
         order: {
           items: cartCtx.items,
           customer: customerData,
         },
       }),
-    });
+    );
   }
 
   return (
