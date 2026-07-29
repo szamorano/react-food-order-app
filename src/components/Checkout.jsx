@@ -6,6 +6,7 @@ import Input from "./UI/Input";
 import Button from "./UI/Button";
 import UserProgressContext from "../store/UserProgressContext";
 import useHttp from "../hooks/useHttp";
+import Error from "./Error";
 
 const requestConfig = {
   method: "POST",
@@ -23,7 +24,7 @@ export default function Checkout() {
     isLoading: isSending,
     error,
     sendRequest,
-  } = useHttp("http://localhost:3000/orders", requestConfig);
+  } = useHttp("http://localhost:3000/ordersssssssss", requestConfig);
 
   const cartTotal = cartCtx.items.reduce(
     (totalPrice, item) => totalPrice + item.quantity * item.price,
@@ -76,6 +77,9 @@ export default function Checkout() {
           <Input label="Postal Code" type="text" id="postal-code" />
           <Input label="City" type="text" id="city" />
         </div>
+
+        {error && <Error title="Failed to submit order" message={error} />}
+
         <p className="modal-actions">{actions}</p>
       </form>
     </Modal>
