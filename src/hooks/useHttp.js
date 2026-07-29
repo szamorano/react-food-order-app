@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 // for sending general requests
 async function sendHttpRequest(url, config) {
@@ -15,21 +15,29 @@ async function sendHttpRequest(url, config) {
   return resData;
 }
 
-export default function useHttp() {
+export default function useHttp(url, config) {
   // for updating some state based on the request status - like error or loading states
   const [data, setData] = useState(); // <--- success case
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
-  async function sendRequest() {
-    setIsLoading(true);
-    try {
-      const resData = sendHttpRequest();
-      setData(resData);
-    } catch (error) {
-      setError(error.message || "Something went wrong!");
-    }
-    setIsLoading(false);
-  }
+
+  const sendRequest = useCallback(
+    async function sendRequest() {
+      setIsLoading(true);
+      try {
+        const resData = sendHttpRequest(url, config);
+        setData(resData);
+      } catch (error) {
+        setError(error.message || "Something went wrong!");
+      }
+      setIsLoading(false);
+    },
+    [url, config],
+  );
+
+  useEffect(() => {
+    sendRequest();
+  }, [sendRequest]);
 
   return {
     data,
