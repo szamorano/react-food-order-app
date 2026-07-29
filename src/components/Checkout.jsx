@@ -5,6 +5,7 @@ import { currencyFormatter } from "../util/Formatting";
 import Input from "./UI/Input";
 import Button from "./UI/Button";
 import UserProgressContext from "../store/UserProgressContext";
+import useHttp from "../hooks/useHttp";
 
 const requestConfig = {
   method: "POST",
@@ -17,10 +18,12 @@ export default function Checkout() {
   const cartCtx = useContext(CartContext);
   const userProgressCtx = useContext(UserProgressContext);
 
-  const { data, isLoading, error, sendRequest } = useHttp(
-    "http://localhost:3000/orders",
-    requestConfig,
-  );
+  const {
+    data,
+    isLoading: isSending,
+    error,
+    sendRequest,
+  } = useHttp("http://localhost:3000/orders", requestConfig);
 
   const cartTotal = cartCtx.items.reduce(
     (totalPrice, item) => totalPrice + item.quantity * item.price,
@@ -48,6 +51,19 @@ export default function Checkout() {
     );
   }
 
+  let actions = (
+    <>
+      <Button type="button" textOnly onClick={handleClose}>
+        Close
+      </Button>
+      <Button>Submit Order</Button>
+    </>
+  );
+
+  if (isSending) {
+    actions = <span>Sending order data...</span>;
+  }
+
   return (
     <Modal open={userProgressCtx.progress === "checkout"} onClose={handleClose}>
       <form onSubmit={handleSubmit}>
@@ -60,12 +76,7 @@ export default function Checkout() {
           <Input label="Postal Code" type="text" id="postal-code" />
           <Input label="City" type="text" id="city" />
         </div>
-        <p className="modal-actions">
-          <Button type="button" textOnly onClick={handleClose}>
-            Close
-          </Button>
-          <Button>Submit Order</Button>
-        </p>
+        <p className="modal-actions">{actions}</p>
       </form>
     </Modal>
   );
