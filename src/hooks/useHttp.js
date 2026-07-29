@@ -15,9 +15,9 @@ async function sendHttpRequest(url, config) {
   return resData;
 }
 
-export default function useHttp(url, config) {
+export default function useHttp(url, config, initialData) {
   // for updating some state based on the request status - like error or loading states
-  const [data, setData] = useState(); // <--- success case
+  const [data, setData] = useState(initialData); // <--- success case
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
 
@@ -25,7 +25,7 @@ export default function useHttp(url, config) {
     async function sendRequest() {
       setIsLoading(true);
       try {
-        const resData = sendHttpRequest(url, config);
+        const resData = await sendHttpRequest(url, config);
         setData(resData);
       } catch (error) {
         setError(error.message || "Something went wrong!");
@@ -36,12 +36,15 @@ export default function useHttp(url, config) {
   );
 
   useEffect(() => {
-    sendRequest();
+    if ((config && (config.method === "GET" || !config.method)) || !config) {
+      sendRequest();
+    }
   }, [sendRequest]);
 
   return {
     data,
     isLoading,
     error,
+    sendRequest,
   };
 }
